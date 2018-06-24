@@ -20,7 +20,7 @@ async def on_ready():
 
 @bot.command(pass_context = True)
 async def setup(ctx,message,team_list):
-    for index in range(len(list)):
+    for index in range(len(team_list)):
         role_name = team_list[index][1]
         await bot.create_role(ctx.message.server, name = role_name)
         await bot.send_message(ctx.message.channel, str(team_list[index][0] + ' ' + team_list[index][1]))
