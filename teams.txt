@@ -1,0 +1,19 @@
+1 Auburn
+2 Georgia-Southern
+3 Georgia-Tech
+4 Kansas-State
+5 Kennesaw-State
+6 North-Carolina-State
+7 Ole-Miss
+8 Penn-State
+9 Robert- Morris
+11 Texas-Tech
+12 UC-Irvine
+13 UC-Riverside
+14 UofFlorida
+15 University-of-Missouri
+16 Oklahoma
+17 Texas-Austin
+18 Washington
+19 Wisconsin-Madison
+20 Virginia-Tech"
