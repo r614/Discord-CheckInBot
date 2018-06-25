@@ -10,13 +10,16 @@ channel_ID = 460422215851048992
 bot = commands.Bot(command_prefix='.')
 """Important - Assign teams as shown in the supporting file. Use ''-'' instead of spaces in team names, and keep one space between team number and team name """
 
-with open("teams.txt") as textInfo:
-        team_list = [line.split() for line in textInfo]
-print(team_list)
+""" on_ready reads the txt file into a 2D array team_list and prints it out into the console. """
 
 @bot.event
 async def on_ready():
-    await bot.say('Bot is ready')
+    with open("teams.txt") as textInfo:
+        team_list = [line.split() for line in textInfo]
+    await print(team_list)
+    await bot.say('Team List Loaded')
+
+""" setup reads the name of a team, creates a role and channel in the discord for that team. It does this for all the teams in the list. Also prints the team list with numbers in order."""
 
 @bot.command(pass_context = True)
 async def setup(ctx,message,team_list):
@@ -26,6 +29,7 @@ async def setup(ctx,message,team_list):
         await bot.send_message(ctx.message.channel, str(team_list[index][0] + ' ' + team_list[index][1]))
         await bot.create_channel(ctx.message.server, name = role_name, type=discord.ChannelType.voice)
 
+""" im takes the member name and team number as input and assigns the member to the role corresponding to the team number given in setup."""
 
 @bot.command(pass_context = True)
 async def im(ctx,member, number, team_list):
