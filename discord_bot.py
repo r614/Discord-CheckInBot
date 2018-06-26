@@ -1,11 +1,17 @@
 import discord
 from discord.ext import commands
 import os
+import asyncio
 
 
 TOKEN = ''
-channel_ID = 460422215851048992
-
+channel_ID = 460312060446638083
+team_list = []
+with open('Discord_token.txt', 'r') as token_file:
+	TOKEN = token_file.read()
+	print("Token is:", TOKEN)
+with open("teams.txt") as textInfo:
+    team_list = [line.split() for line in textInfo]
 
 bot = commands.Bot(command_prefix='.')
 """Important - Assign teams as shown in the supporting file. Use ''-'' instead of spaces in team names, and keep one space between team number and team name """
@@ -14,9 +20,7 @@ bot = commands.Bot(command_prefix='.')
 
 @bot.event
 async def on_ready():
-    with open("teams.txt") as textInfo:
-        team_list = [line.split() for line in textInfo]
-    await print(team_list)
+    print(team_list)
     await bot.say('Team List Loaded')
 
 """ setup reads the name of a team, creates a role and channel in the discord for that team. It does this for all the teams in the list. Also prints the team list with numbers in order."""
