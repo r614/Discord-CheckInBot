@@ -6,7 +6,8 @@ import asyncio
 
 TOKEN = ''
 channel_ID = 460312060446638083
-team_list = []
+server_id = 460312060446638081
+team_list = [] #team_list is a list that contains lists. Each sublist contains two string elements, one for team number and one for team name
 
 print(discord.__version__)
 with open('Discord_token.txt', 'r') as token_file:
@@ -15,6 +16,8 @@ with open('Discord_token.txt', 'r') as token_file:
 
 with open("teams.txt") as textInfo:
 	team_list = [line.split() for line in textInfo]
+	print(team_list)
+
 
 client = discord.Client()
 bot = commands.Bot(command_prefix='.')
@@ -39,9 +42,11 @@ async def on_message(message):
 			await bot.send_message(ctx.message.channel, str(team_list[index][0] + ' ' + team_list[index][1]))
 			await bot.create_channel(ctx.message.server, name = role_name, type=discord.ChannelType.voice)
 		print('Done')
-	if message.content == '.permission':
-		channels = client.get_all_channels()
-		await client.send_message(message.channel, channels)
+	if message.content == '.test1':
+		server = message.channel.server
+		await client.create_channel(server, 'Test Voice Channel', type = discord.ChannelType.voice)
+		await client.send_message(message.channel, 'Voice Channel Created')
+
 
 @client.event
 async def on_ready():
