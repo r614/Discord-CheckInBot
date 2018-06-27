@@ -16,4 +16,4 @@
 17 Texas-Austin
 18 Washington
 19 Wisconsin-Madison
-20 Virginia-Tech"
+20 Virginia-Tech
