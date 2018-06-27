@@ -9,14 +9,28 @@ import discord
 from discord.ext import commands
 import os
 import asyncio
-
+import random
 
 TOKEN = ''
 server_id = 460312060446638081
 team_list = [] #team_list is a list that contains lists. Each sublist contains two string elements, one for team number and one for team name
+better_team_list = []
 role_list = [] #list of role objects
 channel_list = [] #list of newly created channels
+cancer_list = [] #list of cancer spam 
+team_checkin_status = {}
+role_mapping_dict = {}
 global server
+
+fidget_spinner_cancer = 'if my girl👧😍and fidget spinner߷ both dying😱and I can only save one 😤😬catch me at her funeral 😔👻🌹spinning ߷ through ߷ the ߷ pain ߷ 💯 😎'
+breed_cancer = '😍Guys😍, I’m 😲shaking😲. I’m fucking😲 shaking😲. I never wanted to 👉👌🍆🍑breed 🍑🍆👉👌with anyone more than I want to with 🎃👻Halloween 👻✝️Mercy.✝️🎃️ That 💯perfect,💯 ⏳curvy ⏳😍body.😍 Those 😍bountiful😍 🍈breasts🍈. The 👪child 👪bearing😍 hips😍 of a 🖼️💐literal goddess💐🖼️. It honestly fucking 😳😳hurts😳😳 knowing that I’ll never❤👅💋mate ❤👅💋with her, ⬆pass⬆ my 👖genes👖 through her, and have her 👑birth👑 a set of 👪💯perfect offspring.💯👪 I’d do fucking💰💰💰 ANYTHING 💰💰'
+fish_cancer = ' Do✋ not 😰 eat 👌 fish 🐟 after 😶 u 😯 drink water 🍺 bc 😰 it can 👻 swim in 🏊 ur stomach 😮 and u will 😲 feel 😕 gulugulu in ur stomach 😓😳😼'
+dank_cancer = '🔊🔊🚨🚨WARNING🔊🚨🚨WARNING🚨🚨🔊THIS IS A 🐸DANK 👽MEME❗❗ 🐸ALERT. INCOMING 🐸DANK 👽MEME🐸 👐👌HEADING STRAIGHT 🚀🚀YOUR WAY. 🔜👆👆👆PLEASE TAKE ANY PRECAUTIONS🚧🚧 NECESSARY TO PREPARE YOURSELF FOR THIS 🐸DANK 👽MEME❗❗ 🐸 🌋🌋🌋 .BUCKLE UP♿♿♿ THEM SEATBELTS👮👮,PUT THEM CELLPHONES ON SILENT📵📵 AND LOOSEN THAT ANUS👅👅🍑🍑🍑🍩🍩💩💩 CUZ THIS MEME JUST CAME STRAIGHT OUT OF THE 🚬🚬 🍁🏭🍁🏭🍁🚬🚬DANK FACTORY.'
+
+cancer_list.append(fidget_spinner_cancer)
+cancer_list.append(breed_cancer)
+cancer_list.append(fish_cancer)
+cancer_list.append(dank_cancer)
 
 print(discord.__version__)
 with open('Discord_token.txt', 'r') as token_file:
@@ -31,6 +45,10 @@ with open("teams.txt") as textInfo:
 client = discord.Client()
 
 bot = commands.Bot(command_prefix='.')
+
+for team in team_list:
+	team_checkin_status[team[1]] = u"\U0000274C\n"
+	better_team_list.append(team[1])
 """Important - Assign teams as shown in the supporting file. Use ''-'' instead of spaces in team names, and keep one space between team number and team name """
 
 """ on_ready reads the txt file into a 2D array team_list and prints it out into the console. """
@@ -58,19 +76,9 @@ async def on_message(message):
 	if message.content == "who's the best":
 		await client.send_message(message.channel,'ZerO is the best oniichan! oWo')
 
-
-	#Roshan's code. IDK what it's supposed to do but it doesn't work
-	if message.content == '.setup':
-		for index in range(len(team_list)):
-			role_name = team_list[index][1]
-			await bot.create_role(ctx.message.server, name = role_name)
-			await bot.send_message(ctx.message.channel, str(team_list[index][0] + ' ' + team_list[index][1]))
-			await bot.create_channel(ctx.message.server, name = role_name, type=discord.ChannelType.voice)
-		print('Done')
-
 	#Creates new Channels and Roles in the server, naming them after the team names provided in the team_list document
 	#Modifies: role_list, channel_list
-	if message.content == '.test1':
+	if message.content == '.init_channels_and_roles' and message.channel.name == 'discord-set-up':
 		for team in team_list:
 			new_channel = await client.create_channel(server, team[1], type = discord.ChannelType.voice)
 			await client.edit_channel(new_channel, user_limit = 4)
@@ -82,6 +90,9 @@ async def on_message(message):
 			overwrite.speak = True
 			await client.edit_channel_permissions(new_channel, new_role, overwrite)
 
+		for role in server.roles:
+			role_mapping_dict[role.name] = role
+
 		await client.send_message(message.channel, 'Voice Channels Created')
 
 	#Clears all text messages from the text channel that called .clear
@@ -90,15 +101,23 @@ async def on_message(message):
 		async for msg in logs:
 			await client.delete_message(msg)
 	
-	#Deletes all Channels and Roles in the role_list and channel_list, but doesn't modify the lists themselves
-	#Make sure to call .test1 to populate channel_list and role_list before you call this function, otherwise it won't work
-	#In other words, if you want to delete the roles and channels fast, make sure your bot doesn't DC or quit in between creating and deleting the channels/roles
-	if message.content == ".delete_channels":
-		for channel in channel_list:
-			await client.delete_channel(channel)
-		for role in role_list:
-			await client.delete_role(server, role)
-
+	#Creates dictionaries for both the newly updated roles and channels, using their names as the key and associating the actual role/channel object as the value
+	#Better_team_list is the list of all teams from the txt file
+	#If a team name present in the better_team_list matches a role/channel name, then that role/channel gets deleted
+	if message.content == ".delete_channels_and_roles" and message.channel.name == 'discord-set-up':
+		channel_dict = {}
+		role_dict = {}
+		channels = server.channels
+		roles = server.roles
+		for channel in channels:
+			channel_dict[channel.name] = channel
+		for role in roles:
+			role_dict[role.name] = role
+		for team in better_team_list:
+			if (team in list(channel_dict.keys())):
+				await client.delete_channel(channel_dict[team])
+				await client.delete_role(server, role_dict[team])
+		await client.send_message(message.channel, "Done deleting channels")
 
 	#Lists all the roles in the server other than Server Admin, Tournament Admin, and @everyone 
 	if message.content == ".roles":
@@ -113,9 +132,9 @@ async def on_message(message):
 	#Assigns roles to people who type in messages with the format: I am: _______
 	# Doesn't allow them to be Tournament or Server Admin
 	# Every user starts with 1 role, the @everyone role
-	# Currently only accepts one other role, need to change that cuz that's outdated
-	if message.content.lower().startswith("i am:"):
-		role_mapping_dict = {}
+	# Allows only one team role, plus a Team Captain role if applicable
+	# The V role will be manually assigned by Tournament Admins
+	if message.content.lower().startswith("i am:") and message.channel.name == 'role-request':
 		split_entry = message.content.split(":")
 		role_to_add = split_entry[1].strip()
 		print(role_to_add)
@@ -123,28 +142,65 @@ async def on_message(message):
 		if(role_to_add == 'Server Admin' or role_to_add == 'Tournament Admin' or role_to_add == 'v'):
 			await client.send_message(message.channel,'Not Allowed to access these roles')
 			return
-		for role in server.roles:
-			role_mapping_dict[role.name] = role
 
 		if(len(message.author.roles) >= 2):
-			print(len(message.author.roles))
 			if(role_to_add == 'Team Captain'):
 				if(len(message.author.roles) == 2):
 					await client.add_roles(message.author, role_mapping_dict[role_to_add])
 					await client.send_message(message.channel,'You have been added to your role')
 					return
-			await client.send_message(message.channel,'Cannot have more than 2 roles')
+			if(len(message.author.roles) == 2):
+				if(message.author.roles[1].name == 'Team Captain'):
+					await client.add_roles(message.author, role_mapping_dict[role_to_add])
+					await client.send_message(message.channel,'You have been added to your role')
+					return					
+			await client.send_message(message.channel,'I cannot do that. Beep Boop')
 			return
 		#print(server.roles)
 
-		print(role_mapping_dict)
 		if role_to_add in list(role_mapping_dict.keys()):
 			await client.add_roles(message.author, role_mapping_dict[role_to_add])
 			await client.send_message(message.channel,'You have been added to your role')
 		else:
 			await client.send_message(message.channel,'That role does not exist')
 
+	if message.content == '.setup' and message.channel.name == 'check-in':
+		team_checkin = ""
+		
+		for team_key in list(team_checkin_status.keys()):
+			team_checkin = team_checkin + team_key + ":    " + team_checkin_status[team_key]
+		await client.send_message(message.channel, team_checkin)
 
+	if message.content == ".cancer":
+		index = random.randint(0, 3)
+		await client.send_message(message.channel, cancer_list[index])
+
+	if message.content.startswith('.checkin') and message.channel.name == 'check-in':
+		is_captain = False;
+		has_team = False;
+		if(len(message.author.roles) != 3 and len(message.author.roles) != 4):
+			print(len(message.author.roles))
+			await client.send_message(message.channel, "Not authorized to checkin for your team")
+			return
+		for role in message.author.roles:
+			if (role.name == 'Team Captain'):
+				is_captain = True
+			if (role.name in list(team_checkin_status.keys())):
+				has_team = True
+				team_name = role.name
+
+		if (is_captain == True and has_team == True):
+			team_checkin = ''
+			team_checkin_status[team_name] = u"\U00002705\n"
+			logs = client.logs_from(message.channel)
+			async for msg in logs:
+				if u"\U0000274C\n" in msg.content:
+					edit_message = msg
+			for team_key in list(team_checkin_status.keys()):
+				team_checkin = team_checkin + team_key + ":    " + team_checkin_status[team_key]
+			await client.edit_message(edit_message, team_checkin)
+		else:
+			await client.send_message(message.channel, "You are not the Captain or you do not have a team role")
 
 
 @client.event
