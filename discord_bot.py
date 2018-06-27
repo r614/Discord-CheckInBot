@@ -43,7 +43,7 @@ async def on_message(message):
         for index in range(len(team_list[0])):
             if team_name == team_list[index][1]:
                 flag = True
-                team_list[index][2] = true
+                team_list[index][2] = True
                 client.say('Team' + ' ' + str(team_name) + ' '+ 'is now ready!')
                 print('Team' + ' ' + str(team_name) + ' '+ 'is now ready!')
                 break
