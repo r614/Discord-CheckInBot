@@ -82,6 +82,7 @@ async def on_message(message):
 
         await client.send_message(message.channel, 'Voice Channels and Team Roles Created')
 
+
     #################################################################################
     #  Function: Clears all text messages from the text channel that called .clear  #
     #  Modifies: Nothing                                                            #
