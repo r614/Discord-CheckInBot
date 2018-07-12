@@ -1,19 +1,19 @@
-1 Auburn 0
-2 Georgia-Southern 0
-3 Georgia-Tech 0
-4 Kansas-State 0
-5 Kennesaw-State 0
-6 North-Carolina-State 0
-7 Ole-Miss 0
-8 Penn-State 0
-9 Robert- Morris 0
-11 Texas-Tech 0
-12 UC-Irvine 0
-13 UC-Riverside 0
-14 UofFlorida 0
-15 University-of-Missouri 0
-16 Oklahoma 0
-17 Texas-Austin 0
-18 Washington 0
-19 Wisconsin-Madison 0
-20 Virginia-Tech 0
+1 Auburn
+2 Georgia-Southern
+3 Georgia-Tech
+4 Kansas-State
+5 Kennesaw-State
+6 North-Carolina-State
+7 Ole-Miss
+8 Penn-State
+9 Robert- Morris
+11 Texas-Tech
+12 UC-Irvine
+13 UC-Riverside
+14 UofFlorida
+15 University-of-Missouri
+16 Oklahoma
+17 Texas-Austin
+18 Washington
+19 Wisconsin-Madison
+20 Virginia-Tech
