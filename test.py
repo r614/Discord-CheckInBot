@@ -6,10 +6,11 @@
 
 
 import discord
-from discord.ext import commands
 import os
 import asyncio
 import random
+
+global setup_already
 
 TOKEN = ''
 server_id = 460312060446638081
@@ -21,17 +22,10 @@ role_mapping_dict = {}
 setup_already = False
 global server
 
-fidget_spinner_cancer = 'if my girl👧😍and fidget spinner߷ both dying😱and I can only save one 😤😬catch me at her funeral 😔👻🌹spinning ߷ through ߷ the ߷ pain ߷ 💯 😎'
-breed_cancer = '😍Guys😍, I’m 😲shaking😲. I’m fucking😲 shaking😲. I never wanted to 👉👌🍆🍑breed 🍑🍆👉👌with anyone more than I want to with 🎃👻Halloween 👻✝️Mercy.✝️🎃️ That 💯perfect,💯 ⏳curvy ⏳😍body.😍 Those 😍bountiful😍 🍈breasts🍈. The 👪child 👪bearing😍 hips😍 of a 🖼️💐literal goddess💐🖼️. It honestly fucking 😳😳hurts😳😳 knowing that I’ll never❤👅💋mate ❤👅💋with her, ⬆pass⬆ my 👖genes👖 through her, and have her 👑birth👑 a set of 👪💯perfect offspring.💯👪 I’d do fucking💰💰💰 ANYTHING 💰💰'
-fish_cancer = ' Do✋ not 😰 eat 👌 fish 🐟 after 😶 u 😯 drink water 🍺 bc 😰 it can 👻 swim in 🏊 ur stomach 😮 and u will 😲 feel 😕 gulugulu in ur stomach 😓😳😼'
-dank_cancer = '🔊🔊🚨🚨WARNING🔊🚨🚨WARNING🚨🚨🔊THIS IS A 🐸DANK 👽MEME❗❗ 🐸ALERT. INCOMING 🐸DANK 👽MEME🐸 👐👌HEADING STRAIGHT 🚀🚀YOUR WAY. 🔜👆👆👆PLEASE TAKE ANY PRECAUTIONS🚧🚧 NECESSARY TO PREPARE YOURSELF FOR THIS 🐸DANK 👽MEME❗❗ 🐸 🌋🌋🌋 .BUCKLE UP♿♿♿ THEM SEATBELTS👮👮,PUT THEM CELLPHONES ON SILENT📵📵 AND LOOSEN THAT ANUS👅👅🍑🍑🍑🍩🍩💩💩 CUZ THIS MEME JUST CAME STRAIGHT OUT OF THE 🚬🚬 🍁🏭🍁🏭🍁🚬🚬DANK FACTORY.'
 
-cancer_list.append(fidget_spinner_cancer)
-cancer_list.append(breed_cancer)
-cancer_list.append(fish_cancer)
-cancer_list.append(dank_cancer)
 
 print(discord.__version__)
+
 with open('Discord_token.txt', 'r') as token_file:
 	TOKEN = token_file.read()
 	print("Token is:", TOKEN)
@@ -43,14 +37,9 @@ with open("teams.txt") as textInfo:
 
 client = discord.Client()
 
-bot = commands.Bot(command_prefix='.')
-
 for team in team_list:
 	team_checkin_status[team[1]] = u"\U0000274C\n"
 	better_team_list.append(team[1])
-"""Important - Assign teams as shown in the supporting file. Use ''-'' instead of spaces in team names, and keep one space between team number and team name """
-
-""" on_ready reads the txt file into a 2D array team_list and prints it out into the console. """
 
 
 ###########################################
@@ -68,20 +57,6 @@ async def on_message(message):
 	#########################################
 	if message.author == client.user:
 		return
-
-	############################
-	#  Bot LucidiT is a weeb   #
-	############################
-	if message.content == "who's the best":
-		await client.send_message(message.channel,'ZerO is the best oniichan! oWo')
-
-
-	#################################################
-	#  Bot LucidiT likes to spread cancer PogChamp  #
-	#################################################
-	if message.content == ".cancer":
-		index = random.randint(0, 3)
-		await client.send_message(message.channel, cancer_list[index])
 
 	#####################################################################################
 	#  Function: Creates new Channels and Roles in the server                           #
@@ -112,7 +87,9 @@ async def on_message(message):
 	#  Returns: Nothing                                                             #
 	#################################################################################
 	if message.content == ".clear":
+		global setup_already
 		logs = client.logs_from(message.channel)
+		setup_already = False
 		async for msg in logs:
 			await client.delete_message(msg)
 	
@@ -205,7 +182,6 @@ async def on_message(message):
 	#  Returns: Nothing                                                                                     #
 	#########################################################################################################
 	if message.content == '.setup' and message.channel.name == 'check-in':
-		global setup_already
 		if(setup_already == False):
 			team_checkin = "Team Check-in Status\n"
 			
